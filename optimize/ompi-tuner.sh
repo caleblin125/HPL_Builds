@@ -42,4 +42,16 @@ export SLURM_SHELL=/bin/bash
 #for collective in ${collectives// / } ; do
 #    sed -i '1c\#!/usr/bin/env bash' $work_dir/output/$collective/${collective}_coltune.sh
 #done
+
+# Add lines to coltune_script.py
+#print("# Load custom OpenMPI", file=f)
+#print("export PATH=/home/caleb/HPL_FINAL/opt/OpenMPI/bin:$PATH", file=f)
+#print("export LD_LIBRARY_PATH=/home/caleb/HPL_FINAL/opt/OpenMPI/lib:$LD_LIBRARY_PATH", file=f)
+#print("export MANPATH=/home/caleb/HPL_FINAL/opt/OpenMPI/share/man:$MANPATH", file=f)
+
+#print("export OMPI_MCA_btl_tcp_if_include=enp1s0 ", file=f)
+#print("export OMPI_MCA_btl=self,vader,tcp", file=f)
+        
+
+#Using python3 need to add encoding="utf-8", errors="ignore" to ignore errors (or modify config)
 bash ./run_and_analyze.sh --config-file=config --scheduler=slurm

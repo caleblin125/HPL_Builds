@@ -402,3 +402,7 @@ mkdir -p output/dats
 chmod 777 hpl.cmd
 sbatch hpl.cmd
 squeue
+
+
+#ssh compute-1-of-4 "top -bn1 | grep 'Cpu(s)' && free -h | grep Mem"
+

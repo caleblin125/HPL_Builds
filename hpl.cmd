@@ -65,8 +65,7 @@ add_build() {
 add_build $HPL_ROOT/opt/AOCL AOCL
 add_build $HPL_ROOT/opt/OpenMPI OpenMPI
 
-export OPENBLAS_NUM_THREADS=1
-export OMP_NUM_THREADS=1
+export OMP_NUM_THREADS=2
 
 export OMPI_MCA_btl_tcp_if_include=enp1s0 
 export OMPI_MCA_btl=self,vader,tcp
@@ -77,10 +76,23 @@ pkill -f orted
 mkdir -p output/dats
 cp -f HPL.dat opt/$HPL/bin/
 cp -f HPL.dat output/dats/HPL-$SLURM_JOB_ID.dat
+
+if [[ -f "optimize/clone/ompi-collectives-tuning/output/decision.file" ]]; then
+    echo "found mpi tuning collectives"
+    cp optimize/clone/ompi-collectives-tuning/output/decision.file .
+else
+    echo "did not find mpi tuning collectives"
+fi
+
 echo $(which mpirun)
-mpirun -np 32 opt/$HPL/bin/xhpl | tee hpl.out
+mpirun -np 32 --mca coll_tuned_dynamic_rules_filename decision.file opt/$HPL/bin/xhpl | tee hpl.out
 
 echo "FINISHED RUN: HPL_AOCL_OpenMPI"
 
 rm -f $HPL_ROOT/../CalebLin.tar
-tar -cvf $HPL_ROOT/../CalebLin.tar HPL.dat hpl.cmd hpl.out hplscript.sh
+tar -cvf $HPL_ROOT/../CalebLin.tar HPL.dat hpl.cmd hpl.out hplscript.sh decision.file
+
+if [[ -f parseout.py ]]; then
+    echo "parsing output"
+    python3 parseout.py
+fi
