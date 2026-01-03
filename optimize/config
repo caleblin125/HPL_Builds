@@ -1,0 +1,10 @@
+collectives : allgather allgatherv allreduce alltoall alltoallv barrier bcast gather reduce reduce_scatter_block reduce_scatter scatter
+omb_collective_directory : /home/caleb/HPL_FINAL/optimize/opt/osu-micro-benchmarks/libexec/osu-micro-benchmarks/mpi/collective/
+imb_binary : /home/caleb/HPL_FINAL/optimize/clone/mpi-benchmarks/IMB-MPI1
+number_of_ranks : 2 4 8 16 32
+max_num_node : 2
+number_of_cores_per_node : 16
+number_of_runs_per_test : 3
+mpirun_options :
+  -x OMPI_MCA_btl_tcp_if_include=enp1s0
+  -x OMPI_MCA_btl=self,vader,tcp
