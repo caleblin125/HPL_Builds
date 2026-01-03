@@ -85,8 +85,8 @@ else
 fi
 
 echo $(which mpirun)
-mpirun -np 32 --mca coll_tuned_dynamic_rules_filename decision.file opt/$HPL/bin/xhpl | tee hpl.out
-
+mpirun -np 32 --mca coll_tuned_dynamic_rules_filename decision.file opt/$HPL/bin/xhpl
+cat hpl.out
 echo "FINISHED RUN: HPL_AOCL_OpenMPI"
 
 rm -f $HPL_ROOT/../CalebLin.tar
