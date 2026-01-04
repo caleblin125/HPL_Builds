@@ -1,14 +1,11 @@
 #!/bin/bash
-#SBATCH -p slimey
+#SBATCH -p gooey
 #SBATCH -J struggle
 #SBATCH -e output/AOCL_OpenMPI%j.err
 #SBATCH -o output/AOCL_OpenMPI%j.out
-#SBATCH --ntasks=4
 #SBATCH -N 2
 #SBATCH --tasks-per-node=2
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=0
-#SBATCH --hint=compute_bound
 #SBATCH --chdir=/home/caleb/HPL_MULTITHREAD
 
 HPL_ROOT=/home/caleb/HPL_MULTITHREAD
@@ -67,11 +64,13 @@ add_build() {
 add_build $HPL_ROOT/opt/AOCL AOCL
 add_build $HPL_ROOT/opt/OpenMPI OpenMPI
 
+export BLIS_NUM_THREADS=8
+export OMP_NUM_THREADS=8
+#export OMP_PLACES=cores
+#export OMP_PROC_BIND=TRUE
 
-export BLIS_NUM_THREADS=$SLURM_CPUS_PER_TASK
-export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 #export GOMP_CPU_AFFINITY="0 1 2 3 4 5 6 7"
-#export BLIS_IC_NT=$SLURM_CPUS_PER_TASK
+#export BLIS_IC_NT=8
 #export BLIS_JC_NT=1
 
 export OMPI_MCA_btl_tcp_if_include=enp1s0 
@@ -86,36 +85,44 @@ cp -f HPL.dat output/dats/HPL-$SLURM_JOB_ID.dat
 echo $(which mpirun)
 chmod 777 opt/$HPL/bin/xhpl
 
-#mpirun --display-map -np 1 hostname
+lscpu | egrep "NUMA|Core|Socket"
+numactl --hardware
+ldd opt/$HPL/bin/xhpl | grep blas
 
 #srun --mpi=pmix \
-     --ntasks=4 \
-     --cpus-per-task=8 \
-     --cpu-bind=cores \
-     opt/$HPL/bin/xhpl | tee hpl.out
+#     --ntasks=4 \
+#     --cpus-per-task=8 \
+#     --cpu-bind=cores \
+#     opt/$HPL/bin/xhpl | tee hpl.out
 
-mpirun -np 4 \
-    --report-bindings \
-    --bind-to core \
-    --map-by ppr:1:l3cache \
-    -x OMP_NUM_THREADS=$OMP_NUM_THREADS \
-    -x OMP_PROC_BIND=TRUE \
-    -x OMP_PLACES=$OMP_PLACES \
-    -x BLIS_IC_NT=$BLIS_IC_NT \
-    -x BLIS_JC_NT=$BLIS_JC_NT \
-    -x BLIS_NUM_THREADS=$BLIS_NUM_THREADS \
-    opt/$HPL/bin/xhpl | tee hpl.out
+#mpirun -np 4 \
+#    --report-bindings \
+#    --map-by numa \
+#    -x OMP_NUM_THREADS=$OMP_NUM_THREADS \
+#    -x OMP_PROC_BIND=TRUE \
+#    -x OMP_PLACES=$OMP_PLACES \
+#    opt/$HPL/bin/xhpl | tee hpl.out
 
-#mpirun --report-bindings --map-by socket:PE=8 --bind-to core -np $SLURM_NTASKS opt/$HPL/bin/xhpl | tee hpl.out
-
-echo "FINISHED RUN: HPL_AOCL_OpenMPI"
+mpirun --report-bindings --bind-to core --map-by numa:pe=8 --mca coll_tuned_dynamic_rules_filename decision.file -np 4 opt/$HPL/bin/xhpl | tee hpl.out
 
 HPL_STATUS=${PIPESTATUS[0]}
 
-if [[ $HPL_STATUS -eq 0 ]]; then
-    echo "HPL completed successfully. Creating tarball..."
-    rm -f $HPL_ROOT/../CalebLin.tar
-    tar -cvf $HPL_ROOT/../CalebLin.tar HPL.dat hpl.cmd hpl.out hplscript.sh
-else
-    echo "HPL failed (exit code $HPL_STATUS). Skipping tarball creation."
+#opt/$HPL/bin/xhpl | tee hpl.out
+
+echo "FINISHED RUN: HPL_AOCL_OpenMPI"
+
+# if [[ $HPL_STATUS -eq 0 ]]; then
+#     echo "HPL completed successfully. Creating tarball..."
+#     rm -f $HPL_ROOT/../CalebLin.tar
+#     tar -cvf $HPL_ROOT/../CalebLin.tar HPL.dat hpl.cmd hpl.out hplscript.sh
+# else
+#     echo "HPL failed (exit code $HPL_STATUS). Skipping tarball creation."
+# fi
+
+if [[ -f parseout.py ]]; then
+    echo "parsing output"
+    python3 parseout.py
 fi
+
+#ssh compute-3-of-4 "top -bn1 | grep 'Cpu(s)' && free | awk '/Mem:/ {printf \"Mem: %.1f%% used\n\", \$3/\$2*100}'"
+
