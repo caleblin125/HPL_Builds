@@ -66,12 +66,14 @@ add_build $HPL_ROOT/opt/OpenMPI OpenMPI
 
 export BLIS_NUM_THREADS=8
 export OMP_NUM_THREADS=8
-#export OMP_PLACES=cores
-#export OMP_PROC_BIND=TRUE
+export OMP_PLACES=cores
+export OMP_PROC_BIND=FALSE
 
-#export GOMP_CPU_AFFINITY="0 1 2 3 4 5 6 7"
-#export BLIS_IC_NT=8
-#export BLIS_JC_NT=1
+export BLIS_IC_NT=8
+export BLIS_JC_NT=1
+
+export OMPI_MCA_hwloc_base_binding_policy=none
+export OMPI_MCA_rmaps_base_mapping_policy=slot
 
 export OMPI_MCA_btl_tcp_if_include=enp1s0 
 export OMPI_MCA_btl=self,vader,tcp
@@ -93,17 +95,16 @@ ldd opt/$HPL/bin/xhpl | grep blas
 #     --ntasks=4 \
 #     --cpus-per-task=8 \
 #     --cpu-bind=cores \
+#     env | grep OMP
+
+#srun --mpi=pmix \
+#     --ntasks=4\
+#     --cpus-per-task=8 \
+#     --cpu-bind=cores \
 #     opt/$HPL/bin/xhpl | tee hpl.out
 
-#mpirun -np 4 \
-#    --report-bindings \
-#    --map-by numa \
-#    -x OMP_NUM_THREADS=$OMP_NUM_THREADS \
-#    -x OMP_PROC_BIND=TRUE \
-#    -x OMP_PLACES=$OMP_PLACES \
-#    opt/$HPL/bin/xhpl | tee hpl.out
-
-mpirun --report-bindings --bind-to core --map-by numa:pe=8 --mca coll_tuned_dynamic_rules_filename decision.file -np 4 opt/$HPL/bin/xhpl | tee hpl.out
+mpirun --report-bindings --bind-to core --map-by numa:pe=8 -np 4 opt/$HPL/bin/xhpl | tee hpl.out
+cat hpl.out
 
 HPL_STATUS=${PIPESTATUS[0]}
 
@@ -111,13 +112,13 @@ HPL_STATUS=${PIPESTATUS[0]}
 
 echo "FINISHED RUN: HPL_AOCL_OpenMPI"
 
-# if [[ $HPL_STATUS -eq 0 ]]; then
-#     echo "HPL completed successfully. Creating tarball..."
-#     rm -f $HPL_ROOT/../CalebLin.tar
-#     tar -cvf $HPL_ROOT/../CalebLin.tar HPL.dat hpl.cmd hpl.out hplscript.sh
-# else
-#     echo "HPL failed (exit code $HPL_STATUS). Skipping tarball creation."
-# fi
+if [[ $HPL_STATUS -eq 0 ]]; then
+    echo "HPL completed successfully. Creating tarball..."
+    rm -f $HPL_ROOT/../CalebLin.tar
+    tar -cvf $HPL_ROOT/../CalebLin.tar HPL.dat hpl.cmd hpl.out hplscript.sh
+else
+    echo "HPL failed (exit code $HPL_STATUS). Skipping tarball creation."
+fi
 
 if [[ -f parseout.py ]]; then
     echo "parsing output"
@@ -126,3 +127,9 @@ fi
 
 #ssh compute-3-of-4 "top -bn1 | grep 'Cpu(s)' && free | awk '/Mem:/ {printf \"Mem: %.1f%% used\n\", \$3/\$2*100}'"
 
+#ssh compute-3-of-4 '
+#for p in $(pgrep xhpl); do
+#  echo "PID $p threads: $(ls /proc/$p/task | wc -l)";
+#  taskset -cp $p;
+#done
+#'

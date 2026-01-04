@@ -1,8 +1,16 @@
+# AOCL multithreaded (openMP) + OpenMPI implementation
+# 8 threads x 2 processes x 2 nodes (4 total problems)
+# Kinda slower than a 1-core-to-1-process run, but i believe there is something wrong that i'm doing that will fix that
+# Possibilities: Network tuning using ompi-collectives-tuning, manual build of openmp for AOCL, idk
+# also it takes forever to generate the matricies cuz idk why it's only using 4 cores instead of all to write to memory (this doesn't impact flops tho)
+
 #!/bin/bash
 set -e
 
-mkdir -p ~/HPL_MULTITHREAD
-cd ~/HPL_MULTITHREAD
+HPL_ROOT=~/HPL_MULTITHREAD
+
+mkdir -p $HPL_ROOT
+cd $HPL_ROOT
 export HPL_ROOT=$(pwd)
 export INSTALL_DIR="$(pwd)/opt"
 export CLONE_DIR="$(pwd)/clone"

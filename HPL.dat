@@ -1,11 +1,11 @@
 HPLinpack benchmark input file
 Innovative Computing Laboratory, University of Tennessee
-HPL.out      output file name (if any) 
-6            device out (6=stdout,7=stderr,file)
+/home/caleb/HPL_MULTITHREAD/hpl.out      output file name (if any) 
+file         device out (6=stdout,7=stderr,file)
 1            # of problems sizes (N)
-118313       Ns
-4            # of NBs
-256 196 2048 1024   NBs
+119760       Ns
+1            # of NBs
+240          NBs
 0            PMAP process mapping (0=Row-,1=Column-major)
 1            # of process grids (P x Q)
 2            Ps
@@ -20,7 +20,7 @@ HPL.out      output file name (if any)
 1            # of recursive panel fact.
 1            RFACTs (0=left, 1=Crout, 2=Right)
 1            # of broadcast
-1            BCASTs (0=1rg,1=1rM,2=2rg,3=2rM,4=Lng,5=LnM)
+2            BCASTs (0=1rg,1=1rM,2=2rg,3=2rM,4=Lng,5=LnM)
 1            # of lookahead depth
 0            DEPTHs (>=0)
 2            SWAP (0=bin-exch,1=long,2=mix)

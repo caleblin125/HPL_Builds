@@ -16,8 +16,8 @@ Gflops : Rate of execution for solving the linear system.
 
 The following parameter values will be used:
 
-N      :  118313 
-NB     :    1000 
+N      :  119760 
+NB     :     240 
 PMAP   : Row-major process mapping
 P      :       2 
 Q      :       2 
@@ -25,7 +25,7 @@ PFACT  :   Right
 NBMIN  :       4 
 NDIV   :       2 
 RFACT  :   Crout 
-BCAST  :  1ringM 
+BCAST  :   2ring 
 DEPTH  :       0 
 SWAP   : Mix (threshold = 64)
 L1     : transposed form
@@ -41,29 +41,3 @@ ALIGN  : 8 double precision words
 - The relative machine precision (eps) is taken to be               1.110223e-16
 - Computational tests pass if scaled residuals are less than                16.0
 
-Column=000001000 Fraction= 0.8% Gflops=1.161e+03
-Column=000002000 Fraction= 1.7% Gflops=1.138e+03
-Column=000003000 Fraction= 2.5% Gflops=1.139e+03
-Column=000004000 Fraction= 3.4% Gflops=1.119e+03
-Column=000005000 Fraction= 4.2% Gflops=1.113e+03
-Column=000006000 Fraction= 5.1% Gflops=1.114e+03
-Column=000007000 Fraction= 5.9% Gflops=1.116e+03
-Column=000008000 Fraction= 6.8% Gflops=1.108e+03
-Column=000009000 Fraction= 7.6% Gflops=1.112e+03
-Column=000010000 Fraction= 8.5% Gflops=1.095e+03
-Column=000011000 Fraction= 9.3% Gflops=1.082e+03
-Column=000012000 Fraction=10.1% Gflops=1.066e+03
-Column=000013000 Fraction=11.0% Gflops=1.059e+03
-Column=000014000 Fraction=11.8% Gflops=1.050e+03
-Column=000015000 Fraction=12.7% Gflops=1.043e+03
-Column=000016000 Fraction=13.5% Gflops=1.032e+03
-Column=000017000 Fraction=14.4% Gflops=1.026e+03
-Column=000018000 Fraction=15.2% Gflops=1.016e+03
-Column=000019000 Fraction=16.1% Gflops=1.013e+03
-Column=000020000 Fraction=16.9% Gflops=1.008e+03
-Column=000021000 Fraction=17.7% Gflops=1.004e+03
-Column=000022000 Fraction=18.6% Gflops=1.001e+03
-Column=000023000 Fraction=19.4% Gflops=9.993e+02
-Column=000024000 Fraction=20.3% Gflops=9.955e+02
-Column=000025000 Fraction=21.1% Gflops=9.936e+02
-Column=000026000 Fraction=22.0% Gflops=9.885e+02
