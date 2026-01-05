@@ -4,8 +4,8 @@
 #SBATCH -e output/AOCL_OpenMPI%j.err
 #SBATCH -o output/AOCL_OpenMPI%j.out
 #SBATCH -N 2
-#SBATCH --tasks-per-node=2
-#SBATCH --cpus-per-task=8
+#SBATCH --tasks-per-node=8
+#SBATCH --cpus-per-task=2
 #SBATCH --chdir=/home/caleb/HPL_MULTITHREAD
 
 HPL_ROOT=/home/caleb/HPL_MULTITHREAD
@@ -64,13 +64,13 @@ add_build() {
 add_build $HPL_ROOT/opt/AOCL AOCL
 add_build $HPL_ROOT/opt/OpenMPI OpenMPI
 
-export BLIS_NUM_THREADS=8
-export OMP_NUM_THREADS=8
+export BLIS_NUM_THREADS=$SLURM_CPUS_PER_TASK
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export OMP_PLACES=cores
 export OMP_PROC_BIND=FALSE
 
-export BLIS_IC_NT=8
-export BLIS_JC_NT=1
+#export BLIS_IC_NT=$SLURM_CPUS_PER_TASK
+#export BLIS_JC_NT=1
 
 export OMPI_MCA_hwloc_base_binding_policy=none
 export OMPI_MCA_rmaps_base_mapping_policy=slot
@@ -91,22 +91,9 @@ lscpu | egrep "NUMA|Core|Socket"
 numactl --hardware
 ldd opt/$HPL/bin/xhpl | grep blas
 
-#srun --mpi=pmix \
-#     --ntasks=4 \
-#     --cpus-per-task=8 \
-#     --cpu-bind=cores \
-#     env | grep OMP
-
-#srun --mpi=pmix \
-#     --ntasks=4\
-#     --cpus-per-task=8 \
-#     --cpu-bind=cores \
-#     opt/$HPL/bin/xhpl | tee hpl.out
-
-mpirun --report-bindings --bind-to core --map-by numa:pe=8 -np 4 opt/$HPL/bin/xhpl | tee hpl.out
-cat hpl.out
-
+mpirun --report-bindings --bind-to core --map-by numa:pe=$SLURM_CPUS_PER_TASK -np $SLURM_NTASKS opt/$HPL/bin/xhpl | tee hpl.out
 HPL_STATUS=${PIPESTATUS[0]}
+#cat hpl.out
 
 #opt/$HPL/bin/xhpl | tee hpl.out
 

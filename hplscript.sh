@@ -1,5 +1,5 @@
 # AOCL multithreaded (openMP) + OpenMPI implementation
-# 8 threads x 2 processes x 2 nodes (4 total problems)
+# 16 threads x 1 processes x 2 nodes (2 total problems)
 # Kinda slower than a 1-core-to-1-process run, but i believe there is something wrong that i'm doing that will fix that
 # Possibilities: Network tuning using ompi-collectives-tuning, manual build of openmp for AOCL, idk
 # also it takes forever to generate the matricies cuz idk why it's only using 4 cores instead of all to write to memory (this doesn't impact flops tho)
@@ -7,7 +7,7 @@
 #!/bin/bash
 set -e
 
-HPL_ROOT=~/HPL_MULTITHREAD
+HPL_ROOT=~/HPL_MULTITHREAD #Also need to change this in hpl.cmd, hpl.dat, Make.Slugalicious (parseout.py if needed)
 
 mkdir -p $HPL_ROOT
 cd $HPL_ROOT
@@ -15,6 +15,8 @@ export HPL_ROOT=$(pwd)
 export INSTALL_DIR="$(pwd)/opt"
 export CLONE_DIR="$(pwd)/clone"
 export BUILD_DIR="$(pwd)/build"
+
+echo $HPL_ROOT > "hpl.info"
 
 mkdir -p $INSTALL_DIR $CLONE_DIR $BUILD_DIR
 
