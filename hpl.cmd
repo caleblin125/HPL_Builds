@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -p slimey
+#SBATCH -p gooey
 #SBATCH -J HPL_AOCL_OpenMPI_run
 #SBATCH -e output/AOCL_OpenMPI%j.err
 #SBATCH -o output/AOCL_OpenMPI%j.out
@@ -65,7 +65,10 @@ add_build() {
 add_build $HPL_ROOT/opt/AOCL AOCL
 add_build $HPL_ROOT/opt/OpenMPI OpenMPI
 
-export OMP_NUM_THREADS=2
+export BLIS_NUM_THREADS=1
+export OMP_NUM_THREADS=1
+export OMP_PROC_BIND=close
+export OMP_PLACES=cores
 
 export OMPI_MCA_btl_tcp_if_include=enp1s0 
 export OMPI_MCA_btl=self,vader,tcp
@@ -84,8 +87,16 @@ else
     echo "did not find mpi tuning collectives"
 fi
 
+lscpu | egrep "NUMA|Core|Socket"
+numactl --hardware
+ldd opt/$HPL/bin/xhpl | grep blas
+
 echo $(which mpirun)
-mpirun -np 32 --mca coll_tuned_dynamic_rules_filename decision.file opt/$HPL/bin/xhpl
+#echo "With tuned dynamic rules"
+#mpirun -np 32 --bind-to core --map-by numa --mca coll_tuned_dynamic_rules_filename decision.file opt/$HPL/bin/xhpl
+#cat hpl.out
+echo "Without tuned dynamic rules"
+mpirun -np 32 --bind-to core --map-by numa opt/$HPL/bin/xhpl
 cat hpl.out
 echo "FINISHED RUN: HPL_AOCL_OpenMPI"
 
