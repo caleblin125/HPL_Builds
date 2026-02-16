@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-mkdir -p ~/HPL_FINAL
-cd ~/HPL_FINAL
+mkdir -p ~/HPL
+cd ~/HPL
 export HPL_ROOT=$(pwd)
 export INSTALL_DIR="$(pwd)/opt"
 export CLONE_DIR="$(pwd)/clone"

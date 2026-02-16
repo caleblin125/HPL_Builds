@@ -1,5 +1,4 @@
 #!/bin/bash
-#SBATCH -p gooey
 #SBATCH -J HPL_AOCL_OpenMPI_run
 #SBATCH -e output/AOCL_OpenMPI%j.err
 #SBATCH -o output/AOCL_OpenMPI%j.out
@@ -7,9 +6,9 @@
 #SBATCH --ntasks=32
 #SBATCH --ntasks-per-node=16
 #SBATCH --cpus-per-task=1
-#SBATCH --chdir=/home/caleb/HPL_FINAL
+#SBATCH --chdir=/jet/home/clin20/HPL_Builds/HPL
 
-HPL_ROOT=/home/caleb/HPL_FINAL
+HPL_ROOT=/jet/home/clin20/HPL_Builds/HPL
 HPL=HPL_AOCL_OpenMPI
 
 add_build() {

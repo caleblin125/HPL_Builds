@@ -67,7 +67,7 @@ ARCH         = Slugalicious
 # - HPL Directory Structure / HPL library ------------------------------
 # ----------------------------------------------------------------------
 #
-TOPdir       = /home/caleb/HPL_FINAL/clone/HPL_AOCL_OpenMPI
+TOPdir       = /jet/home/clin20/HPL_Builds/HPL/clone/HPL_AOCL_OpenMPI
 INCdir       = $(TOPdir)/include
 BINdir       = $(TOPdir)/bin/$(ARCH)
 LIBdir       = $(TOPdir)/lib/$(ARCH)
@@ -81,9 +81,9 @@ HPLlib       = $(LIBdir)/libhpl.a
 # header files,  MPlib  is defined  to be the name of  the library to be
 # used. The variable MPdir is only used for defining MPinc and MPlib.
 #
-MPdir        = /home/caleb/HPL_FINAL/opt/OpenMPI
-MPinc        = /home/caleb/HPL_FINAL/opt/OpenMPI/include
-MPlib        = /home/caleb/HPL_FINAL/opt/OpenMPI/lib/libmpi.so.40
+MPdir        = /jet/home/clin20/HPL_Builds/HPL/opt/OpenMPI
+MPinc        = /jet/home/clin20/HPL_Builds/HPL/opt/OpenMPI/include
+MPlib        = /jet/home/clin20/HPL_Builds/HPL/opt/OpenMPI/lib/libmpi.so.40
 #
 # ----------------------------------------------------------------------
 # - Linear Algebra library (BLAS or VSIPL) -----------------------------
@@ -92,9 +92,9 @@ MPlib        = /home/caleb/HPL_FINAL/opt/OpenMPI/lib/libmpi.so.40
 # header files,  LAlib  is defined  to be the name of  the library to be
 # used. The variable LAdir is only used for defining LAinc and LAlib.
 #
-LAdir        = /home/caleb/HPL_FINAL/opt/AOCL
-LAinc        = /home/caleb/HPL_FINAL/opt/AOCL/include
-LAlib        = /home/caleb/HPL_FINAL/opt/AOCL/lib/libblis.a -lm
+LAdir        = /jet/home/clin20/HPL_Builds/HPL/opt/AOCL
+LAinc        = /jet/home/clin20/HPL_Builds/HPL/opt/AOCL/include
+LAlib        = /jet/home/clin20/HPL_Builds/HPL/opt/AOCL/lib/libblis.a -lm
 #
 # ----------------------------------------------------------------------
 # - F77 / C interface --------------------------------------------------
